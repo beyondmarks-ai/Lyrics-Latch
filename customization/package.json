@@ -1,0 +1,43 @@
+{
+  "name": "lyriclatch",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A multilingual, voice-first Spotify companion with intelligent lyric-section looping.",
+  "license": "MIT",
+  "keywords": [
+    "spicetify",
+    "spotify",
+    "voice-assistant",
+    "wake-word",
+    "lyrics"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "companion": "node --env-file-if-exists=.env dist/companion/server.mjs",
+    "watch": "node scripts/build.mjs --watch",
+    "deploy": "node scripts/deploy.mjs",
+    "check": "tsc --noEmit",
+    "test:wake-word": "node scripts/test-wake-word.mjs",
+    "test:speech": "node scripts/test-speech.mjs",
+    "test:lyric-loop": "node scripts/run-ts-test.mjs scripts/test-lyric-loop.ts",
+    "test:loop-dialog": "node scripts/run-ts-test.mjs scripts/test-loop-dialog.ts",
+    "test:section-loop-live": "node scripts/test-section-loop-live.mjs",
+    "test:voice-pipeline": "node scripts/test-voice-pipeline.mjs",
+    "test:spotify-live": "node scripts/test-spotify-live.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  },
+  "dependencies": {
+    "google-auth-library": "^11.0.2",
+    "openwakeword-web": "^0.1.0"
+  }
+}

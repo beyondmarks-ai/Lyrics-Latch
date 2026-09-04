@@ -1,0 +1,25 @@
+# Dependencies and build output
+customization/node_modules/
+customization/dist/
+customization/coverage/
+
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+customization/.env
+customization/.env.*
+!customization/.env.example
+*.local
+
+# Editor, OS, and diagnostic files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+
+# Private working material (not part of the product)
+references/
+Hey_Monday_*.onnx

@@ -1,0 +1,5 @@
+{
+  "name": "LyricLatch",
+  "icon": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"9\" y=\"4\" width=\"6\" height=\"10\" rx=\"3\"/><path d=\"M6.5 11a5.5 5.5 0 0 0 11 0M12 16.5V20M9 20h6M5 7a9 9 0 0 1 14 0M19 7l.5-3.5L16 4\"/></svg>",
+  "active-icon": "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect x=\"9\" y=\"3.5\" width=\"6\" height=\"11\" rx=\"3\"/><path d=\"M5.7 10.5a1 1 0 1 1 2 0 4.3 4.3 0 0 0 8.6 0 1 1 0 1 1 2 0 6.3 6.3 0 0 1-5.3 6.22V20h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-3.28a6.3 6.3 0 0 1-5.3-6.22Z\"/><path d=\"M4.2 7.2A9.5 9.5 0 0 1 19 5.6l.25-1.7a.8.8 0 1 1 1.58.24l-.65 4.3-4.3-.65a.8.8 0 0 1 .24-1.58l1.75.27A7.9 7.9 0 0 0 5.45 8.15.8.8 0 1 1-1.25-.95Z\"/></svg>"
+}
