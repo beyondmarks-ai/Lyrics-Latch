@@ -31,9 +31,6 @@ import java.util.concurrent.Executors
 class MainActivity : Activity() {
     private val executor = Executors.newSingleThreadExecutor()
     private lateinit var spotifyClientId: EditText
-    private lateinit var sarvamKey: EditText
-    private lateinit var youtubeKey: EditText
-    private lateinit var backendUrl: EditText
     private lateinit var voiceStatus: TextView
     private lateinit var spotifyStatus: TextView
     private lateinit var nowPlaying: TextView
@@ -54,7 +51,7 @@ class MainActivity : Activity() {
             }
         }
         handleAuthCallback(intent?.data)
-        if (AppGraph.auth.isConnected()) connectRemote(false)
+        if (AppGraph.auth.isConnected()) connectRemote(false, startListener = true)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -110,21 +107,15 @@ class MainActivity : Activity() {
             actionButton("Next") { runCommand { AppGraph.spotify.next() } },
         ))
 
-        content.addView(sectionTitle("Secure setup"))
+        content.addView(sectionTitle("Spotify setup"))
         content.addView(label(
-            "Register ai.beyondmarks.lyriclatch and lyriclatch-login://callback in your Spotify developer app. Keys are encrypted with Android Keystore.",
+            "One-time setup: enter the public Client ID registered for ai.beyondmarks.lyriclatch and lyriclatch-login://callback. Transcription and song search are configured automatically.",
             13f,
             MUTED,
         ).apply { setPadding(dp(4), 0, dp(4), dp(12)) })
         spotifyClientId = input("Spotify Client ID", secret = false)
-        sarvamKey = input("Sarvam API key")
-        youtubeKey = input("YouTube API key")
-        backendUrl = input("Optional HTTPS Azure backend URL", secret = false)
-        listOf(spotifyClientId, sarvamKey, youtubeKey, backendUrl).forEach(content::addView)
-        content.addView(row(
-            actionButton("Save securely") { saveSettings(); toast("Settings saved") },
-            actionButton("Authorize Spotify") { saveSettings(); authorizeSpotify() },
-        ))
+        content.addView(spotifyClientId)
+        content.addView(actionButton("Connect Spotify") { saveSettings(); authorizeSpotify() })
 
         content.addView(label(
             "Keep LyricLatch’s notification visible while listening. Android requires this for background microphone access.",
@@ -165,8 +156,8 @@ class MainActivity : Activity() {
 
     private fun startVoice() {
         val settings = AppGraph.store.settings()
-        if (settings.sarvamApiKey.isBlank() && settings.backendUrl.isBlank()) {
-            toast("Add a Sarvam key or HTTPS backend first")
+        if (settings.backendUrl.isBlank()) {
+            toast("This build is missing its managed service configuration")
             return
         }
         startForegroundService(Intent(this, WakeWordService::class.java).setAction(WakeWordService.ACTION_START))
@@ -177,6 +168,10 @@ class MainActivity : Activity() {
     }
 
     private fun authorizeSpotify() {
+        if (AppGraph.store.settings().spotifyClientId.isBlank()) {
+            toast("Enter the public Spotify Client ID first")
+            return
+        }
         runCatching { AppGraph.auth.begin(this) }.onFailure { toast(it.message ?: "Could not start Spotify login") }
     }
 
@@ -185,18 +180,19 @@ class MainActivity : Activity() {
         spotifyStatus.setText(R.string.spotify_authorizing)
         executor.execute {
             runCatching { AppGraph.auth.complete(uri) }
-                .onSuccess { runOnUiThread { connectRemote(true) } }
+                .onSuccess { runOnUiThread { connectRemote(true, startListener = true) } }
                 .onFailure { runOnUiThread { toast(it.message ?: "Spotify authorization failed") } }
         }
     }
 
-    private fun connectRemote(showAuth: Boolean) {
+    private fun connectRemote(showAuth: Boolean, startListener: Boolean = false) {
         spotifyStatus.setText(R.string.spotify_connecting)
         AppGraph.spotify.connect(showAuth) { result ->
             runOnUiThread {
                 result.onSuccess {
                     spotifyStatus.setText(R.string.spotify_connected)
                     spotifyStatus.setTextColor(CYAN)
+                    if (startListener) requestVoiceStart()
                 }.onFailure {
                     spotifyStatus.setText(R.string.spotify_connection_failed)
                     spotifyStatus.setTextColor(ERROR)
@@ -209,16 +205,10 @@ class MainActivity : Activity() {
     private fun loadSettings() {
         val settings = AppGraph.store.settings()
         spotifyClientId.setText(settings.spotifyClientId)
-        sarvamKey.setText(settings.sarvamApiKey)
-        youtubeKey.setText(settings.youtubeApiKey)
-        backendUrl.setText(settings.backendUrl)
     }
 
     private fun saveSettings() {
         AppGraph.store.put(ConfigStore.KEY_SPOTIFY_CLIENT_ID, spotifyClientId.text.toString())
-        AppGraph.store.put(ConfigStore.KEY_SARVAM_API_KEY, sarvamKey.text.toString())
-        AppGraph.store.put(ConfigStore.KEY_YOUTUBE_API_KEY, youtubeKey.text.toString())
-        AppGraph.store.put(ConfigStore.KEY_BACKEND_URL, backendUrl.text.toString())
     }
 
     private fun showVoiceState(state: VoiceState) {

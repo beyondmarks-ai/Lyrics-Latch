@@ -4,6 +4,7 @@ import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import ai.beyondmarks.lyriclatch.BuildConfig
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -15,6 +16,7 @@ data class AppSettings(
     val sarvamApiKey: String,
     val youtubeApiKey: String,
     val backendUrl: String,
+    val backendToken: String,
 )
 
 class ConfigStore private constructor(context: Context) {
@@ -22,10 +24,11 @@ class ConfigStore private constructor(context: Context) {
     private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
 
     fun settings() = AppSettings(
-        spotifyClientId = get(KEY_SPOTIFY_CLIENT_ID),
+        spotifyClientId = get(KEY_SPOTIFY_CLIENT_ID).ifBlank { BuildConfig.SPOTIFY_CLIENT_ID },
         sarvamApiKey = get(KEY_SARVAM_API_KEY),
         youtubeApiKey = get(KEY_YOUTUBE_API_KEY),
-        backendUrl = get(KEY_BACKEND_URL).trimEnd('/'),
+        backendUrl = BuildConfig.BACKEND_URL.ifBlank { get(KEY_BACKEND_URL) }.trimEnd('/'),
+        backendToken = BuildConfig.BACKEND_TOKEN,
     )
 
     fun put(name: String, value: String) {

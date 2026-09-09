@@ -20,8 +20,7 @@ This is the native Android edition of LyricLatch. It does not embed or modify Sp
 - Android 9 (API 28) or newer
 - The official Spotify Android app, already signed in
 - A Spotify developer application
-- A Sarvam API key, or a compatible HTTPS companion backend
-- An optional YouTube Data API v3 key for better song identification
+- A managed HTTPS companion deployment (the personal APK can be built with this preconfigured)
 - Android Studio or JDK 17+ with Android SDK 36
 
 Playback-control endpoints may require Spotify Premium. Spotify development-mode applications must also allowlist the Spotify account used on the phone.
@@ -70,11 +69,11 @@ C:\Users\YOUR_NAME\AppData\Local\Android\Sdk\platform-tools\adb.exe install -r a
 ## First run
 
 1. Open LyricLatch and enter the Spotify Client ID from your Spotify developer application.
-2. Enter a Sarvam key and, optionally, a YouTube API key. Alternatively, enter an HTTPS companion-backend URL.
-3. Tap **Save securely**.
-4. Tap **Authorize Spotify**, approve access, and return to LyricLatch.
-5. Tap **Start listening** and approve microphone and notification access.
-6. Keep the LyricLatch notification enabled, play Spotify, and say **“Hey Monday.”**
+2. Tap **Connect Spotify**, approve access, and return to LyricLatch.
+3. Approve microphone and notification access when Android asks.
+4. LyricLatch starts the foreground listener automatically. Keep its notification enabled, play Spotify, and say **“Hey Monday.”**
+
+Sarvam, YouTube, and the companion URL are not entered on the phone. They are injected into the managed Azure service and personal APK during deployment. Spotify authorization is still required once because Spotify does not permit applications to bypass account consent.
 
 Android requires the microphone listener to be started while the application is visible. The foreground notification remains visible for the entire listening session and includes a Stop action.
 
@@ -93,7 +92,7 @@ Android requires the microphone listener to be started while the application is 
 
 The wake phrase is evaluated entirely on the phone. Only the captured command following a wake detection is sent to Sarvam or the configured backend. Song queries may be sent to YouTube, Spotify, and LRCLIB.
 
-Direct API keys are intended for a private, personally installed build. For distribution, use a secured HTTPS backend with authentication, rate limiting, and provider-side key restrictions. Do not publish an unprotected copy of the desktop companion because it contains proxy endpoints for billable services.
+Provider API keys remain in Azure and are not stored in the APK. The personal APK carries a revocable companion access token; do not distribute it publicly. For wider distribution, replace this token with user authentication, rate limiting, and device attestation.
 
 ## Known platform boundary
 

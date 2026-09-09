@@ -1,5 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+fun quotedBuildValue(value: String): String = "\"" + value
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"") + "\""
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,10 +17,13 @@ android {
         applicationId = "ai.beyondmarks.lyriclatch"
         minSdk = 28
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "SPOTIFY_CLIENT_ID", quotedBuildValue(providers.environmentVariable("LYRICLATCH_SPOTIFY_CLIENT_ID").orElse("").get()))
+        buildConfigField("String", "BACKEND_URL", quotedBuildValue(providers.environmentVariable("LYRICLATCH_BACKEND_URL").orElse("").get()))
+        buildConfigField("String", "BACKEND_TOKEN", quotedBuildValue(providers.environmentVariable("LYRICLATCH_BACKEND_TOKEN").orElse("").get()))
     }
 
     buildTypes {
@@ -34,6 +41,10 @@ android {
 
     packaging {
         resources.excludes += setOf("META-INF/DEPENDENCIES", "META-INF/LICENSE*", "META-INF/NOTICE*")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 }
 

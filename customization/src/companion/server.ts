@@ -4,7 +4,9 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { GoogleAuth } from "google-auth-library";
 
-const port = Number(process.env.COMPANION_PORT || 43821);
+const port = Number(process.env.PORT || process.env.COMPANION_PORT || 43821);
+const host = process.env.WEBSITE_HOSTNAME || process.env.CONTAINER_APP_NAME ? "0.0.0.0" : "127.0.0.1";
+const companionAccessToken = process.env.COMPANION_ACCESS_TOKEN?.trim() || "";
 const publicRoot = resolve(import.meta.dirname, "public");
 const googleAuth = new GoogleAuth({ scopes: ["https://www.googleapis.com/auth/cloud-platform"] });
 const googleCloudProject = process.env.GOOGLE_CLOUD_PROJECT?.trim() || "";
@@ -55,10 +57,18 @@ const server = createServer(async (request, response) => {
     response.writeHead(204, {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type"
+      "Access-Control-Allow-Headers": "Content-Type, X-LyricLatch-Token"
     });
     response.end();
     return;
+  }
+
+  if (url.pathname.startsWith("/api/") && companionAccessToken) {
+    const suppliedToken = request.headers["x-lyriclatch-token"];
+    if (suppliedToken !== companionAccessToken) {
+      send(response, 401, { error: "Unauthorized" });
+      return;
+    }
   }
 
   const asset = staticFiles[url.pathname];
@@ -178,8 +188,8 @@ const server = createServer(async (request, response) => {
   send(response, 404, { error: "Not found" });
 });
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`LyricLatch companion listening at http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+  console.log(`LyricLatch companion listening at http://${host}:${port}`);
 });
 
 async function readRequestBody(request: import("node:http").IncomingMessage, maximumBytes: number): Promise<Buffer> {

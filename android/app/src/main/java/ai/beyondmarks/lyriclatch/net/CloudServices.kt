@@ -14,7 +14,13 @@ class CloudServices(private val store: ConfigStore) {
             val bytes = ByteBuffer.allocate(pcm.size * 2).order(ByteOrder.LITTLE_ENDIAN)
                 .apply { pcm.forEach(::putShort) }.array()
             val response = Http.requireSuccess(
-                Http.request("POST", "${settings.backendUrl}/api/speech/recognize", body = bytes, contentType = "application/octet-stream"),
+                Http.request(
+                    "POST",
+                    "${settings.backendUrl}/api/speech/recognize",
+                    headers = backendHeaders(settings.backendToken),
+                    body = bytes,
+                    contentType = "application/octet-stream",
+                ),
                 "Speech recognition failed",
             )
             return JSONObject(response.text()).optString("transcript").trim()
@@ -48,6 +54,7 @@ class CloudServices(private val store: ConfigStore) {
             val response = Http.request(
                 "GET",
                 "${settings.backendUrl}/api/youtube/search?q=${encode("$query official song")}",
+                headers = backendHeaders(settings.backendToken),
             )
             if (response.status !in 200..299) return null
             return youtubeTitle(JSONObject(response.text()))
@@ -71,6 +78,7 @@ class CloudServices(private val store: ConfigStore) {
             val response = Http.request(
                 "POST",
                 "${settings.backendUrl}/api/lyrics/synced",
+                headers = backendHeaders(settings.backendToken),
                 body = json.toString().toByteArray(),
                 contentType = "application/json",
             )
@@ -118,4 +126,6 @@ class CloudServices(private val store: ConfigStore) {
     }
 
     private fun encode(value: String) = SpotifyAuth.formEncode(mapOf("v" to value)).substringAfter('=')
+
+    private fun backendHeaders(token: String) = if (token.isBlank()) emptyMap() else mapOf("X-LyricLatch-Token" to token)
 }
