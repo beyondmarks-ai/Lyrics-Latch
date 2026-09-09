@@ -44,3 +44,33 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  android:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Download Spotify App Remote
+        shell: pwsh
+        run: .\scripts\fetch-spotify-sdk.ps1
+
+      - name: Test and build Android APK
+        run: .\gradlew.bat testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug
+
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: lyriclatch-android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk

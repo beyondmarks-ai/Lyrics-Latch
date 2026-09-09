@@ -1,0 +1,3 @@
+-keep class com.spotify.** { *; }
+-keep class ai.onnxruntime.** { *; }
+-dontwarn com.spotify.**

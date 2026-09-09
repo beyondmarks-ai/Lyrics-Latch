@@ -23,3 +23,15 @@ npm-debug.log*
 # Private working material (not part of the product)
 references/
 Hey_Monday_*.onnx
+
+# Android local state and generated APKs
+android/.gradle/
+android/local.properties
+android/**/build/
+android/.avd/
+android/.tmp/
+android/hs_err_pid*.log
+android/app/libs/*.aar
+android/.idea/
+*.jks
+*.keystore

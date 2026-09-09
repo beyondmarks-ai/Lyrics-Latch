@@ -18,6 +18,10 @@ LyricLatch adds hands-free music control to the Spotify desktop client through S
 
 Its signature feature is an interactive lyric loop: say **“loop song part”**, then answer the spoken follow-up with lyrics or a timestamp range. LyricLatch locates the section, repeats it, and lets you adjust the loop by voice.
 
+## Android edition
+
+A native Android application is included in [`android/`](android/). It runs the same wake-word and VAD models directly on the phone, controls the official Spotify Android application, encrypts credentials with Android Keystore, and supports the voice-command and section-loop workflows without Spicetify. See the [Android build and installation guide](android/README.md).
+
 > [!IMPORTANT]
 > LyricLatch is an independent Spicetify customization. It is not affiliated with, endorsed by, or supported by Spotify, Google, YouTube, Sarvam AI, or LRCLIB. Spicetify integrations may need updates when Spotify changes its desktop client.
 

@@ -10,6 +10,7 @@ Notable components include:
 | openwakeword-web | Apache-2.0 | <https://github.com/kousthubraja/openWakeWord> |
 | ONNX Runtime Web | MIT | <https://github.com/microsoft/onnxruntime> |
 | Google Auth Library for Node.js | Apache-2.0 | <https://github.com/googleapis/google-auth-library-nodejs> |
+| Spotify Android App Remote | Apache-2.0 | <https://github.com/spotify/android-sdk> |
 
 The complete LGPL-2.1 text distributed with the Spicetify type declarations is available at [`THIRD_PARTY_LICENSES/Spicetify-LGPL-2.1.txt`](THIRD_PARTY_LICENSES/Spicetify-LGPL-2.1.txt).
 

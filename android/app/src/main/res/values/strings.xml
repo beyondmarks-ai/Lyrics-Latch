@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LyricLatch</string>
+    <string name="notification_channel">LyricLatch voice</string>
+    <string name="notification_description">Wake-word listening and voice commands</string>
+    <string name="spotify_authorizing">Completing Spotify authorization…</string>
+    <string name="spotify_connecting">Connecting to Spotify…</string>
+    <string name="spotify_connected">Spotify connected</string>
+    <string name="spotify_connection_failed">Spotify connection failed</string>
+</resources>
