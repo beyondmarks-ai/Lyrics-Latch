@@ -162,3 +162,10 @@ Secrets, dependencies, source maps/build output, local reference clones, and dup
 ## License
 
 LyricLatch’s original source and branding are available under the [MIT License](LICENSE). Bundled or referenced third-party components retain their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+<!-- beyond-marks-credit:start -->
+---
+### Built by Beyond Marks AI Academy
+
+Developed by **Rakesh Kumar** at [Beyond Marks AI Academy](https://beyondmarks.ai).
+<!-- beyond-marks-credit:end -->
